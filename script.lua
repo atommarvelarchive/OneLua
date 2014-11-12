@@ -1,9 +1,13 @@
--- resolution is 480 x 272
-local green = color.new(57,191,106)
-local purple = color.new(204,97,208)
-scWidth = 480
-scHeight = 272
-Game = {}
+myColors =
+{
+	green = color.new(57,191,106)
+	purple = color.new(204,97,208)
+}
+Game = 
+{
+	screen = {x = 480,
+			  y = 272}
+}
 Physics = {}
 Hero = {}
 Platform = { platforms = {}}
@@ -41,6 +45,10 @@ function Hero:new(pos,size,color)
 		size = size,
 		color = color,
 		canJump = false,
+		speed = {
+			jump = -500,
+			walk = 80
+		}
 		vel = {x=0,y=0}
 	}, Hero)
 end
@@ -79,10 +87,10 @@ end
 
 function Game:init()
 	os.setcpu(333)
-	hero = Hero:new({x = 140, y =235}, {x = 10, y = 20}, green) --green colored
-	Platform:new({x=0,y=scHeight-20},{x=scWidth,y=20}, purple)
-	Platform:new({x=200,y=scHeight-50},{x=scWidth/2,y=5}, purple)
-	Platform:new({x=100,y=scHeight-100},{x=scWidth/4,y=5}, purple)
+	hero = Hero:new({x = 140, y =235}, {x = 10, y = 20}, myColors.green)
+	Platform:new({x=0,y=self.screen.y-20},{x=self.screen.x,y=20}, myColors.purple)
+	Platform:new({x=200,y=self.screen.y-50},{x=self.screen.x/2,y=5}, myColors.purple)
+	Platform:new({x=100,y=self.screen.y-100},{x=self.screen.x/4,y=5}, myColors.purple)
 end
 
 function Game:renderAll()
@@ -96,13 +104,13 @@ end
 function Game:controls()
 	buttons:read()
 	if buttons.held.cross and hero.canJump then
-		hero.vel.y = -500
+		hero.vel.y = hero.speed.jump
 		hero.canJump = false
 	end
 	if buttons.held.right then
-		hero.vel.x = 80
+		hero.vel.x = hero.speed.walk
 	elseif buttons.held.left then 
-		hero.vel.x = -80
+		hero.vel.x = 0 - hero.speed.walk
 	else
 		hero.vel.x = 0
 	end
